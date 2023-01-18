@@ -14,6 +14,7 @@
 #include <adsp_memory.h>
 #include <adsp_imr_layout.h>
 #include <zephyr/drivers/mm/mm_drv_intel_adsp_mtl_tlb.h>
+#include <zephyr/drivers/clock_control.h>
 
 #define LPSRAM_MAGIC_VALUE      0x13579BDF
 #define LPSCTL_BATTR_MASK       GENMASK(16, 12)
@@ -276,6 +277,8 @@ __weak void pm_state_set(enum pm_state state, uint8_t substate_id)
 			k_cpu_idle();
 		}
 	} else if (state == PM_STATE_RUNTIME_IDLE) {
+		clock_control_set_rate(DEVICE_DT_GET(DT_NODELABEL(clkctl)), NULL,
+				      (clock_control_subsys_rate_t)0);
 		core_desc[cpu].intenable = XTENSA_RSR("INTENABLE");
 		z_xt_ints_off(0xffffffff);
 		DFDSPBRCP.bootctl[cpu].bctl &= ~DFDSPBRCP_BCTL_WAITIPPG;
@@ -348,6 +351,8 @@ __weak void pm_state_exit_post_ops(enum pm_state state, uint8_t substate_id)
 		soc_cpus_active[cpu] = true;
 		z_xtensa_cache_flush_inv_all();
 		z_xt_ints_on(core_desc[cpu].intenable);
+		clock_control_set_rate(DEVICE_DT_GET(DT_NODELABEL(clkctl)), NULL,
+				      (clock_control_subsys_rate_t)1);
 	} else {
 		__ASSERT(false, "invalid argument - unsupported power state");
 	}
