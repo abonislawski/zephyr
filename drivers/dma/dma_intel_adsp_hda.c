@@ -174,8 +174,8 @@ int intel_adsp_hda_dma_host_reload(const struct device *dev, uint32_t channel,
 	const struct intel_adsp_hda_dma_cfg *const cfg = dev->config;
 
 	__ASSERT(channel < cfg->dma_channels, "Channel does not exist");
-
-#if CONFIG_DMA_INTEL_ADSP_HDA_TIMING_L1_EXIT
+	intel_adsp_force_dmi_l0_state();
+#if !CONFIG_DMA_INTEL_ADSP_HDA_TIMING_L1_EXIT
 	intel_adsp_force_dmi_l0_state();
 	switch (cfg->direction) {
 	case HOST_TO_MEMORY:
