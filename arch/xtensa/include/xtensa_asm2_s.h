@@ -616,6 +616,12 @@ _Level\LVL\()Vector:
 	and a0, a0, a2
 	s32i a0, a1, ___xtensa_irq_bsa_t_ps_OFFSET
 .else
+#ifdef CONFIG_SOC_FAMILY_INTEL_ADSP
+	/* Force reload the instruction cache line */
+	l32r a2, _Level\LVL\()Vector
+	ihi a2, 0
+#endif
+
 	rsr.EPS\LVL a0
 	s32i a0, a1, ___xtensa_irq_bsa_t_ps_OFFSET
 .endif
