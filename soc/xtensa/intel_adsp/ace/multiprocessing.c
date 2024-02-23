@@ -135,6 +135,7 @@ void soc_start_core(int cpu_num)
 	 * core will not power on properly when doing transition D0->D3->D0.
 	 */
 	DSPCS.capctl[cpu_num].ctl &= ~DSPCS_CTL_SPA;
+	k_busy_wait(5 * HW_STATE_CHECK_DELAY);
 
 	/* Checking current power status of the core. */
 	if (!WAIT_FOR((DSPCS.capctl[cpu_num].ctl & DSPCS_CTL_CPA) != DSPCS_CTL_CPA,
@@ -143,6 +144,7 @@ void soc_start_core(int cpu_num)
 	}
 
 	DSPCS.capctl[cpu_num].ctl |= DSPCS_CTL_SPA;
+	k_busy_wait(5 * HW_STATE_CHECK_DELAY);
 
 	/* Waiting for power up */
 	while (((DSPCS.capctl[cpu_num].ctl & DSPCS_CTL_CPA) != DSPCS_CTL_CPA) &&
