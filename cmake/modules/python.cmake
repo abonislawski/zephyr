@@ -33,6 +33,8 @@ if(NOT Python3_EXECUTABLE)
 
        if(version VERSION_LESS PYTHON_MINIMUM_REQUIRED)
          set(Python3_EXECUTABLE "Python3_EXECUTABLE-NOTFOUND" CACHE INTERNAL "Path to a program")
+       else()
+         break()
        endif()
     endif()
   endforeach()
