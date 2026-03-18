@@ -82,6 +82,9 @@ struct log_msg_hdr {
 #if defined(CONFIG_LOG_THREAD_ID_PREFIX)
 	void *tid;
 #endif
+#if defined(CONFIG_LOG_MSG_MULTI_SLOT)
+	uint8_t core_id;
+#endif
 };
 /* Messages are aligned to alignment required by cbprintf package. */
 #define Z_LOG_MSG_ALIGNMENT CBPRINTF_PACKAGE_ALIGNMENT
@@ -757,6 +760,21 @@ static inline uint32_t log_msg_generic_get_wlen(const union mpsc_pbuf_generic *i
 static inline uint8_t log_msg_get_domain(struct log_msg *msg)
 {
 	return msg->hdr.desc.domain;
+}
+
+/** @brief Get log message originating core ID.
+ *
+ * @param msg Log message.
+ *
+ * @return Core ID
+ */
+static inline uint8_t log_msg_get_core_id(struct log_msg *msg)
+{
+#if defined(CONFIG_LOG_MSG_MULTI_SLOT)
+	return msg->hdr.core_id;
+#else
+	return 0;
+#endif
 }
 
 /** @brief Get log message level.

@@ -15,4 +15,13 @@ backend = ADSP_MTRACE
 backend-str = adsp_mtrace
 source "subsys/logging/Kconfig.template.log_format_config"
 
+config LOG_MSG_MULTI_SLOT
+	bool "Append originating CPU core ID to log messages"
+	depends on SMP
+	depends on INTEL_ADSP_DEBUG_SLOT_MANAGER
+	help
+	  When enabled, each log message stores the CPU core ID of the
+	  originating core. This allows the mtrace backend to route
+	  messages to per-core debug window slots.
+
 endif # LOG_BACKEND_ADSP_MTRACE
